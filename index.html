@@ -259,6 +259,106 @@ document.getElementById(
 updateUI();
 
 </script>
+<script type="module">
 
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+query,
+orderBy,
+limit,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAYfXvY6vgdJsNw__jUC-zcSIImllVy5MA",
+  authDomain: "coin-tapper-34084.firebaseapp.com",
+  projectId: "coin-tapper-34084",
+  storageBucket: "coin-tapper-34084.firebasestorage.app",
+  messagingSenderId: "244271291005",
+  appId: "1:244271291005:web:672d3a3edbbf8c0255af14"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+window.saveScore = async function(){
+
+let username =
+prompt("Enter username");
+
+if(!username) return;
+
+await addDoc(
+collection(db,"leaderboard"),
+{
+username: username,
+score: coins
+}
+);
+
+alert("Score Saved!");
+
+loadLeaderboard();
+
+};
+
+window.loadLeaderboard = async function(){
+
+const leaderboard =
+document.getElementById(
+"leaderboard"
+);
+
+if(!leaderboard) return;
+
+leaderboard.innerHTML = "";
+
+const q = query(
+collection(db,"leaderboard"),
+orderBy("score","desc"),
+limit(10)
+);
+
+const snap =
+await getDocs(q);
+
+snap.forEach(doc => {
+
+const data = doc.data();
+
+leaderboard.innerHTML +=
+`<li>${data.username}
+- ${data.score}</li>`;
+
+});
+
+};
+
+window.addEventListener(
+"load",
+loadLeaderboard
+);
+
+</script>
+    <div class="panel">
+
+<h2>Global Leaderboard</h2>
+
+<button
+class="upgrade-btn"
+onclick="saveScore()">
+Submit Score
+</button>
+
+<ol id="leaderboard"></ol>
+
+    </div>
 </body>
 </html>
