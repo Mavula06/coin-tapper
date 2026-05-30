@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Coin Tapper</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#121212;
+    color:white;
+    text-align:center;
+}
+
+.header{
+    background:#1f1f1f;
+    padding:15px;
+}
+
+.coins{
+    font-size:36px;
+    font-weight:bold;
+    color:gold;
+}
+
+.coin-btn{
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    border:none;
+    font-size:90px;
+    margin-top:25px;
+    cursor:pointer;
+    background:#222;
+}
+
+.coin-btn:active{
+    transform:scale(0.95);
+}
+
+.panel{
+    background:#1f1f1f;
+    margin:15px;
+    padding:15px;
+    border-radius:12px;
+}
+
+.upgrade-btn{
+    width:90%;
+    padding:12px;
+    margin:8px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.stats{
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1>🪙 Coin Tapper</h1>
+
+<div class="coins">
+Coins: <span id="coins">0</span>
+</div>
+
+<div>
+Coins Per Tap:
+<span id="tapValue">1</span>
+</div>
+</div>
+
+<button class="coin-btn" onclick="tapCoin()">
+🪙
+</button>
+
+<div class="panel">
+<h2>Upgrades</h2>
+
+<button class="upgrade-btn"
+onclick="buyUpgrade(100,1)">
+Bronze Tap (+1)
+Cost: 100
+</button>
+
+<button class="upgrade-btn"
+onclick="buyUpgrade(500,5)">
+Silver Tap (+5)
+Cost: 500
+</button>
+
+<button class="upgrade-btn"
+onclick="buyUpgrade(2000,20)">
+Gold Tap (+20)
+Cost: 2000
+</button>
+
+<button class="upgrade-btn"
+onclick="buyUpgrade(10000,100)">
+Diamond Tap (+100)
+Cost: 10000
+</button>
+
+</div>
+
+<div class="panel">
+
+<h2>Daily Reward</h2>
+
+<button class="upgrade-btn"
+onclick="claimDaily()">
+Claim Daily Bonus
+</button>
+
+<p id="dailyStatus"></p>
+
+</div>
+
+<div class="panel">
+
+<h2>Statistics</h2>
+
+<div class="stats">
+Total Taps:
+<span id="totalTaps">0</span>
+</div>
+
+</div>
+
+<script>
+
+let coins =
+parseInt(localStorage.getItem("coins")) || 0;
+
+let tapValue =
+parseInt(localStorage.getItem("tapValue")) || 1;
+
+let totalTaps =
+parseInt(localStorage.getItem("totalTaps")) || 0;
+
+function saveData(){
+
+localStorage.setItem(
+"coins",
+coins
+);
+
+localStorage.setItem(
+"tapValue",
+tapValue
+);
+
+localStorage.setItem(
+"totalTaps",
+totalTaps
+);
+
+}
+
+function updateUI(){
+
+document.getElementById(
+"coins"
+).innerText = coins;
+
+document.getElementById(
+"tapValue"
+).innerText = tapValue;
+
+document.getElementById(
+"totalTaps"
+).innerText = totalTaps;
+
+}
+
+function tapCoin(){
+
+coins += tapValue;
+
+totalTaps++;
+
+saveData();
+
+updateUI();
+
+}
+
+function buyUpgrade(cost,boost){
+
+if(coins >= cost){
+
+coins -= cost;
+
+tapValue += boost;
+
+saveData();
+
+updateUI();
+
+}
+else{
+
+alert(
+"Not enough coins!"
+);
+
+}
+
+}
+
+function claimDaily(){
+
+let lastClaim =
+localStorage.getItem(
+"lastClaim"
+);
+
+let today =
+new Date().toDateString();
+
+if(lastClaim === today){
+
+document.getElementById(
+"dailyStatus"
+).innerText =
+"Already claimed today.";
+
+return;
+
+}
+
+coins += 500;
+
+localStorage.setItem(
+"lastClaim",
+today
+);
+
+saveData();
+
+updateUI();
+
+document.getElementById(
+"dailyStatus"
+).innerText =
+"+500 Coins Received!";
+
+}
+
+updateUI();
+
+</script>
+
+</body>
+</html>
